@@ -6,6 +6,11 @@ from passers import Passer
 from loaders import *
 from graph import *
 from labels import load_manipulator
+import time
+
+def log_timing(message, args):
+    with open("timing_logs.txt", "a") as f:
+        f.write(f"[GRAPH | {args.net}_{args.dataset}] {message}\n")
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
 parser.add_argument('--net')
@@ -50,20 +55,30 @@ manipulator = load_manipulator(args.permute_labels, args.binarize_labels)
     
 for epoch in args.epochs:
     print('==> Loading checkpoint for epoch {}...'.format(epoch))
+    t_epoch_graph = time.time()
     assert os.path.isdir('checkpoint'), 'Error: no checkpoint directory found!'
     checkpoint = torch.load('./checkpoint/'+ args.net + '_' + args.dataset + '/ckpt_trial_' + str(args.trial) + '_epoch_' + str(epoch)+'.t7')
     net.load_state_dict(checkpoint['net'])
     
     ''' Define passer and get activations '''
+    t_activations = time.time()
     functloader = loader(args.dataset+'_test', batch_size=100, subset=list(range(0, 1000)))
     passer = Passer(net, functloader, criterion, device)
     passer_test = Passer(net, functloader, criterion, device)
     passer_test.run(manipulator=manipulator)
     activs = passer.get_function()
     activs = signal_concat(activs)
+    log_timing(f"Epoka {epoch} - Pobieranie aktywacji: {time.time() - t_activations:.2f} s", args)
+
+    t_adj = time.time()
     adj = adjacency(activs)
+    log_timing(f"Epoka {epoch} - Obliczanie macierzy sąsiedztwa: {time.time() - t_adj:.2f} s", args)
     print('The dimension of the adjacency matrix is {}'.format(adj.shape))
     print('Adj mean {}, min {}, max {}'.format(np.mean(adj), np.min(adj), np.max(adj)))
 
     ''' Write adjacency to binary. To use as DIPHA input for persistence homology '''
+    t_save_bin = time.time()
     save_dipha(SAVE_DIR + 'adj_epc{}_trl{}.bin'.format(epoch, args.trial), 1-adj)
+    log_timing(f"Epoka {epoch} - Zapis do formatu .bin: {time.time() - t_save_bin:.2f} s", args) # <--- ZAPIS
+    
+    log_timing(f"Epoka {epoch} - CAŁKOWITY CZAS GRAFU: {time.time() - t_epoch_graph:.2f} s", args) # <--- ZAPIS
