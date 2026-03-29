@@ -1,6 +1,6 @@
 # Where to save topology results
-SAVE_PATH = 'results_dnn_topology'
-
+#SAVE_PATH = 'results_dnn_topology'
+SAVE_PATH = '/app/results/'
 #  DIPHA
 DIPHA_MAGIC_NUMBER = 8067171840
 ID = 7
@@ -12,4 +12,4 @@ MAX_EPSILON = 0.3
 NPROC = 4
 
 # Sets upper limit to dimension to compute for persistent homology.
-UPPER_DIM = 3
+UPPER_DIM = 1
