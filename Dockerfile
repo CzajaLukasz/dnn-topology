@@ -1,8 +1,8 @@
-FROM python:3.7-slim
+FROM python:3.10-slim
 
-# Instalacja zależności systemowych
+# Instalacja zależności systemowych (dodano g++ dla pymetis)
 RUN apt-get update && apt-get install -y \
-    build-essential cmake git wget libopenmpi-dev openmpi-bin \
+    build-essential g++ cmake git wget libopenmpi-dev openmpi-bin \
     && rm -rf /var/lib/apt/lists/*
 
 # Instalacja DIPHA do niezależnego folderu /opt/dipha
@@ -16,6 +16,13 @@ ENV PATH="/opt/dipha/build:${PATH}"
 
 # Instalacja bibliotek Pythona
 COPY requirements.txt /tmp/
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r /tmp/requirements.txt
 
 WORKDIR /app
+
+ENV USER=root
+ENV LOGNAME=root
+ENV TORCHINDUCTOR_CACHE_DIR=/tmp/torch_cache
+ENV TORCH_HOME=/tmp/torch_home
+ENV MPLCONFIGDIR=/tmp/matplotlib_config

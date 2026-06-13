@@ -122,6 +122,22 @@ TRANSFORMS_MNIST = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.1307,), (0.3081,))])
 
+# --- DOPISZ TO MIEJSCE ---
+TRANSFORMS_TR_CIFAR10_CONVNEXT = transforms.Compose([
+    transforms.Resize(224), # <--- KLUCZOWA ZMIANA dla ConvNeXt
+    transforms.RandomCrop(224, padding=28),
+    transforms.RandomHorizontalFlip(),
+    transforms.ToTensor(),
+    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+])
+
+TRANSFORMS_TE_CIFAR10_CONVNEXT = transforms.Compose([
+    transforms.Resize(224), # <--- KLUCZOWA ZMIANA dla ConvNeXt
+    transforms.ToTensor(),
+    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+])
+# -------------------------
+
 
 def loader(data, batch_size, subset=[], sampling=-1):
     ''' Interface to the dataloader function '''
@@ -171,6 +187,10 @@ def loader(data, batch_size, subset=[], sampling=-1):
     elif data == 'imagenet_test':
         return dataloader('tinyimagenet', '/data/data1/datasets/tiny-imagenet-200/val/images/',
                                  train=False, transform=TRANSFORMS_TE_IMAGENET, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+    elif data == 'cifar10_convnext_train':
+        return dataloader('cifar10', './data', train=True, transform=TRANSFORMS_TR_CIFAR10_CONVNEXT, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+    elif data == 'cifar10_convnext_test':
+        return dataloader('cifar10', './data', train=False, transform=TRANSFORMS_TE_CIFAR10_CONVNEXT, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
 
     
 def get_dataset(data, path, train, transform):

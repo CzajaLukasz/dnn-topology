@@ -5,6 +5,7 @@ from .alexnet import *
 from .densenet import *
 from .inception import *
 from .conv_x import * 
+from .convnext import *
 
 
 
@@ -64,6 +65,10 @@ def get_model(name, dataset):
         net = AlexNet(num_classes=10)
     if name=='alexnet' and dataset=='imagenet':
         net = AlexNet(num_classes=200)
+    if name == 'convnext_tiny' and dataset == 'cifar10_convnext': # <--- POPRAWIONA NAZWA DATASETU
+        net = TopologicalConvNeXt(num_classes=10)
+    if name == 'convnext_tiny' and dataset == 'imagenet':
+        net = TopologicalConvNeXt(num_classes=200)
 
     return net
 

@@ -59,7 +59,7 @@ if args.resume:
   
 ''' Optimization '''
 optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
-lr_scheduler = ReduceLROnPlateau(optimizer, factor=0.5, mode='max', verbose=True)
+lr_scheduler = ReduceLROnPlateau(optimizer, factor=0.5, mode='max')
 
 ''' Define passer '''
 if not args.subset:

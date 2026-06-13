@@ -12,4 +12,4 @@ MAX_EPSILON = 0.3
 NPROC = 4
 
 # Sets upper limit to dimension to compute for persistent homology.
-UPPER_DIM = 2
+UPPER_DIM = 1
