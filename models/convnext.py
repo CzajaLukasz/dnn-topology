@@ -17,22 +17,16 @@ class TopologicalConvNeXt(nn.Module):
         return self.base_model(x)
 
     def forward_features(self, x):
-        # Niestandardowy forward do budowy grafu korelacji
         features = []
-        
-        # Przechodzimy po kolei przez WSZYSTKIE bloki bloku "features"
+        #print(f"DEBUG: Przechodzę przez {len(self.base_model.features)} warstw...")
         for i, layer in enumerate(self.base_model.features):
+            #print(f"Warstwa {i}: {type(layer)}")
             x = layer(x)
-            
-            # Zbieramy cechy po głównych etapach (Stage 1=indeks 1, Stage 2=indeks 3, Stage 3=indeks 5, Stage 4=indeks 7)
             if i in [1, 3, 5, 7]:
-                # Stosujemy Adaptive Average Pooling, aby zredukować wymiary HxW do 1x1.
-                # Dzięki temu badamy korelacje między CAŁYMI FILTRAMI (kanałami), 
-                # a nie pojedynczymi pikselami. Unikniemy awarii pamięci RAM.
+                #print(f"DEBUG: Dodaję cechy z warstwy {i}, kształt: {x.shape}")
                 pooled = F.adaptive_avg_pool2d(x, (1, 1))
-                
-                # Spłaszczamy z (Batch, Channels, 1, 1) do (Batch, Channels)
                 flattened = pooled.view(pooled.size(0), -1)
                 features.append(flattened)
         
+        #print(f"DEBUG: Zwracam {len(features)} zestawów cech.")
         return features

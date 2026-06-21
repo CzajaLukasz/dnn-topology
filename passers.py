@@ -85,14 +85,17 @@ class Passer():
     def get_function(self, forward='selected'):
         ''' Collect function (features) from the self.network.module.forward_features() routine '''
         features = []
+        raw_network = self.network.module if hasattr(self.network, 'module') else self.network
+
         for batch_idx, (inputs, targets) in enumerate(self.loader):
             inputs, targets = inputs.to(self.device), targets.to(self.device)
-            outputs = self.network(inputs)
+            outputs = self.network(inputs) # DataParallel dalej obsługuje zwykły forward()
             
             if forward=='selected':
-                features.append([f.cpu().data.numpy().astype(np.float16) for f in self.network.forward_features(inputs)])
+                # Teraz używamy raw_network, który na pewno ma metodę forward_features
+                features.append([f.cpu().data.numpy().astype(np.float16) for f in raw_network.forward_features(inputs)])
             elif forward=='parametric':
-                features.append([f.cpu().data.numpy().astype(np.float16) for f in self.network.forward_param_features(inputs)])
+                features.append([f.cpu().data.numpy().astype(np.float16) for f in raw_network.forward_param_features(inputs)])
                 
             progress_bar(batch_idx, len(self.loader))
 

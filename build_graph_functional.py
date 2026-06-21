@@ -67,6 +67,10 @@ for epoch in args.epochs:
     passer_test = Passer(net, functloader, criterion, device)
     passer_test.run(manipulator=manipulator)
     activs = passer.get_function()
+    print(f"DEBUG: Passer zwrócił typ: {type(activs)}")
+    if activs is None:
+        print("DEBUG: Passer zwrócił None!")
+        exit(1)
     activs = signal_concat(activs)
     log_timing(f"Epoka {epoch} - Pobieranie aktywacji: {time.time() - t_activations:.2f} s", args)
 

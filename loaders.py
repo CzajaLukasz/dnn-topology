@@ -142,55 +142,55 @@ TRANSFORMS_TE_CIFAR10_CONVNEXT = transforms.Compose([
 def loader(data, batch_size, subset=[], sampling=-1):
     ''' Interface to the dataloader function '''
     if data == 'mnist_train':
-        return dataloader('mnist', './data', train=True, transform=TRANSFORMS_MNIST, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('mnist', './data', train=True, transform=TRANSFORMS_MNIST, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'mnist_test':
-        return dataloader('mnist', './data', train=False, transform=TRANSFORMS_MNIST, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('mnist', './data', train=False, transform=TRANSFORMS_MNIST, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     if data == 'mnist_color32_train':
-        return dataloader('mnist', './data', train=True, transform=TRANSFORMS_TR_COLOR32, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('mnist', './data', train=True, transform=TRANSFORMS_TR_COLOR32, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'mnist_color32_test':
-        return dataloader('mnist', './data', train=False, transform=TRANSFORMS_TE_COLOR32, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('mnist', './data', train=False, transform=TRANSFORMS_TE_COLOR32, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'cifar10_train':
-        return dataloader('cifar10', './data', train=True, transform=TRANSFORMS_TR_CIFAR10, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('cifar10', './data', train=True, transform=TRANSFORMS_TR_CIFAR10, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'cifar10_gray28_train':
-        return dataloader('cifar10', './data', train=True, transform=TRANSFORMS_TR_CIFAR10_GRAY28, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('cifar10', './data', train=True, transform=TRANSFORMS_TR_CIFAR10_GRAY28, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'cifar10_test':
-        return dataloader('cifar10', './data', train=False, transform=TRANSFORMS_TE_CIFAR10, batch_size=batch_size, sampling=sampling , num_workers=2, subset=subset)
+        return dataloader('cifar10', './data', train=False, transform=TRANSFORMS_TE_CIFAR10, batch_size=batch_size, sampling=sampling , num_workers=8, subset=subset)
     elif data == 'cifar10_gray28_test':
-        return dataloader('cifar10', './data', train=False, transform=TRANSFORMS_TE_CIFAR10_GRAY28, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('cifar10', './data', train=False, transform=TRANSFORMS_TE_CIFAR10_GRAY28, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'svhn_train':
-        return dataloader('svhn', './data', train='train', transform=TRANSFORMS_TR_SVHN, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('svhn', './data', train='train', transform=TRANSFORMS_TR_SVHN, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'svhn_test':
-        return dataloader('svhn', './data', train='test', transform=TRANSFORMS_TE_SVHN, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('svhn', './data', train='test', transform=TRANSFORMS_TE_SVHN, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'svhn_gray28_train':
-        return dataloader('svhn', './data', train='train', transform=TRANSFORMS_TR_SVHN_GRAY28, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('svhn', './data', train='train', transform=TRANSFORMS_TR_SVHN_GRAY28, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'svhn_gray28_test':
-        return dataloader('svhn', './data', train='test', transform=TRANSFORMS_TE_SVHN_GRAY28, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('svhn', './data', train='test', transform=TRANSFORMS_TE_SVHN_GRAY28, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'fashion_mnist_train':
-        return dataloader('fashion_mnist', './data', train=True, transform=TRANSFORMS_TR, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('fashion_mnist', './data', train=True, transform=TRANSFORMS_TR, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'fashion_mnist_test':
-        return dataloader('fashion_mnist', './data', train=False, transform=TRANSFORMS_TE, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('fashion_mnist', './data', train=False, transform=TRANSFORMS_TE, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'fashion_mnist_color32_train':
-        return dataloader('fashion_mnist', './data', train=True, transform=TRANSFORMS_TR_COLOR32, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('fashion_mnist', './data', train=True, transform=TRANSFORMS_TR_COLOR32, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'fashion_mnist_color32_test':
-        return dataloader('fashion_mnist', './data', train=False, transform=TRANSFORMS_TE_COLOR32, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('fashion_mnist', './data', train=False, transform=TRANSFORMS_TE_COLOR32, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'lenet_mnist_adversarial_test':
         return dataloader('/data/data1/datasets/lenet_mnist_adversarial/', train=False,
-                          transform=TRANSFORMS_TE_CIFAR10, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+                          transform=TRANSFORMS_TE_CIFAR10, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'lenet_cifar10_adversarial_test':
         return dataloader('/data/data1/datasets/lenet_cifar_adversarial/', train=False,
-                          transform=TRANSFORMS_TE_CIFAR10, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+                          transform=TRANSFORMS_TE_CIFAR10, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'vgg_cifar10_adversarial_test':
-        return dataloader('vgg_cifar10_adversarial', '/data/data1/datasets/vgg_cifar_adversarial/', train=False, transform=TRANSFORMS_TE_CIFAR10, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('vgg_cifar10_adversarial', '/data/data1/datasets/vgg_cifar_adversarial/', train=False, transform=TRANSFORMS_TE_CIFAR10, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'imagenet_train':
         return dataloader('tinyimagenet', '/data/data1/datasets/tiny-imagenet-200/train/',
-                                 train=True, transform=TRANSFORMS_TR_IMAGENET, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+                                 train=True, transform=TRANSFORMS_TR_IMAGENET, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'imagenet_test':
         return dataloader('tinyimagenet', '/data/data1/datasets/tiny-imagenet-200/val/images/',
-                                 train=False, transform=TRANSFORMS_TE_IMAGENET, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+                                 train=False, transform=TRANSFORMS_TE_IMAGENET, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'cifar10_convnext_train':
-        return dataloader('cifar10', './data', train=True, transform=TRANSFORMS_TR_CIFAR10_CONVNEXT, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('cifar10', './data', train=True, transform=TRANSFORMS_TR_CIFAR10, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'cifar10_convnext_test':
-        return dataloader('cifar10', './data', train=False, transform=TRANSFORMS_TE_CIFAR10_CONVNEXT, batch_size=batch_size, sampling=sampling, num_workers=2, subset=subset)
+        return dataloader('cifar10', './data', train=False, transform=TRANSFORMS_TE_CIFAR10, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
 
     
 def get_dataset(data, path, train, transform):

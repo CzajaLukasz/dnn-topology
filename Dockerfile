@@ -1,8 +1,11 @@
-FROM python:3.10-slim
+FROM pytorch/pytorch:2.3.0-cuda12.1-cudnn8-runtime
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Warsaw
 
 # Instalacja zależności systemowych (dodano g++ dla pymetis)
 RUN apt-get update && apt-get install -y \
-    build-essential g++ cmake git wget libopenmpi-dev openmpi-bin \
+    build-essential g++ cmake git wget libopenmpi-dev openmpi-bin tzdata \
     && rm -rf /var/lib/apt/lists/*
 
 # Instalacja DIPHA do niezależnego folderu /opt/dipha

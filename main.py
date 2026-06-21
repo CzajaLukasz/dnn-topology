@@ -30,6 +30,7 @@ parser.add_argument('--graph_type', default='functional')
 parser.add_argument('--n_samples', type=int, default=5)
 parser.add_argument('--select_nodes', default='0')
 parser.add_argument('--partition', default='hardcoded')
+parser.add_argument('--batch_size', type=int, default=128, help='Rozmiar batcha dla treningu')
 args = parser.parse_args()
 
 
@@ -47,7 +48,7 @@ if args.train:
     visible_print('Training network')
     t0_train = time.time()
     os.system('python ./train.py --net '+str(args.net)+' --dataset '+str(args.dataset)+' --trial '+str(args.trial)+' --epochs '+
-              args.n_epochs_train+' --lr '+str(args.lr)+' --permute_labels '+str(args.permute_labels)+' --subset '+str(args.data_subset)+
+              args.n_epochs_train+' --lr '+str(args.lr)+' --permute_labels '+str(args.permute_labels)+' --train_batch_size '+str(args.batch_size)+' --subset '+str(args.data_subset)+
               ' --binarize_labels '+str(args.binarize_labels))
     log_timing(f"Faza treningu zajęła: {time.time() - t0_train:.2f} s", args)
     log_timing(f"Trening jednej epoki zajal srednio: {(time.time() - t0_train)/int(args.n_epochs_train):.2f} s", args)
