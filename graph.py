@@ -147,8 +147,10 @@ def signal_splitting(signals, sz_chunk):
         s = np.reshape(s, (s.shape[0], np.prod(s.shape[1:])))
         sz = np.prod(np.shape(s)[1:])
         
-        if sz > sz_chunk:
-            splits.append([np.transpose(x) for x in np.array_split(s, sz/sz_chunk, axis=1)])
+        # Sprawdzamy, czy sz_chunk jest poprawną liczbą dodatnią
+        if sz_chunk and sz_chunk > 0 and sz > sz_chunk:
+            n_sections = int(np.ceil(sz / sz_chunk))
+            splits.append([np.transpose(x) for x in np.array_split(s, n_sections, axis=1)])
         else:
             splits.append([np.transpose(s)])
         
@@ -176,7 +178,15 @@ def signal_concat(signals):
 
 
 def adjacency_set_correlation(splits):            
-    set_averages = np.asarray([np.mean(x, axis=0) for x in splits])
+    # Spłaszczenie zagnieżdżonej struktury: wyciągamy każdy chunk ze wszystkich warstw
+    set_averages = []
+    for layer in splits:
+        for chunk in layer:
+            # chunk ma kształt (n_neurons, n_samples)
+            # Uśredniamy po neuronach (axis=0), uzyskując wektor próbek (n_samples,)
+            set_averages.append(np.mean(chunk, axis=0))
+            
+    set_averages = np.asarray(set_averages)
     A = adjacency_correlation(set_averages)
     
     return A

@@ -30,7 +30,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
     
 ''' Meta-name to be used as prefix on all savings'''
 oname = args.net + '_' + args.dataset + '/'
-SAVE_DIR = args.save_path + 'adjacency/' + oname
+SAVE_DIR = os.path.join(args.save_path, oname)
 START_LAYER = 3 if args.net in ['vgg', 'resnet'] else 0 
 THRESHOLDS = args.thresholds
 
@@ -63,7 +63,8 @@ for epoch in args.epochs:
     functloader = loader(args.dataset+'_test', batch_size=100, subset=list(range(0, 1000)))
     passer = Passer(net, functloader, criterion, device)
     passer_test = Passer(net, functloader, criterion, device)
-    passer_test.run(manipulator=manipulator)
+    #passer_test.run(manipulator=manipulator)
+    passer_test.run()
     activs = passer.get_function()
 
     print('activs have shape {}'.format(signal_concat(activs).shape))

@@ -1,6 +1,6 @@
 '''
 Data loading Utilities for preparing for various different datasets.
-Includes, MNIST, CIFAR10, TinyImagenet.
+Includes, MNIST, USPS, CIFAR10, TinyImagenet.
 For MNIST and CIFAR10 there are special adversarial samples prepared
 for evaluation. -> <dataset>_adversarial(). Each function returns a
 train and a test DataLoader except the dedicated functions for adversarial
@@ -118,13 +118,37 @@ TRANSFORMS_MNIST_ADV = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.1307,), (0.3081,))])
 
-TRANSFORMS_MNIST = transforms.Compose([
+# --- POPRAWKA DLA MNIST I USPS (DODANIE 3 KANAŁÓW RGB DLA RESNET) ---
+TRANSFORMS_MNIST_TR = transforms.Compose([
+    transforms.Resize(28),
     transforms.ToTensor(),
-    transforms.Normalize((0.1307,), (0.3081,))])
+    transforms.Lambda(lambda x: x.repeat(3, 1, 1) if x.shape[0] == 1 else x),
+    transforms.Normalize((0.1307, 0.1307, 0.1307), (0.3081, 0.3081, 0.3081))
+])
 
-# --- DOPISZ TO MIEJSCE ---
+TRANSFORMS_MNIST_TE = transforms.Compose([
+    transforms.Resize(28),
+    transforms.ToTensor(),
+    transforms.Lambda(lambda x: x.repeat(3, 1, 1) if x.shape[0] == 1 else x),
+    transforms.Normalize((0.1307, 0.1307, 0.1307), (0.3081, 0.3081, 0.3081))
+])
+
+TRANSFORMS_USPS_TR = transforms.Compose([
+    transforms.Resize(28),
+    transforms.ToTensor(),
+    transforms.Lambda(lambda x: x.repeat(3, 1, 1) if x.shape[0] == 1 else x),
+    transforms.Normalize((0.1307, 0.1307, 0.1307), (0.3081, 0.3081, 0.3081))
+])
+
+TRANSFORMS_USPS_TE = transforms.Compose([
+    transforms.Resize(28),
+    transforms.ToTensor(),
+    transforms.Lambda(lambda x: x.repeat(3, 1, 1) if x.shape[0] == 1 else x),
+    transforms.Normalize((0.1307, 0.1307, 0.1307), (0.3081, 0.3081, 0.3081))
+])
+
 TRANSFORMS_TR_CIFAR10_CONVNEXT = transforms.Compose([
-    transforms.Resize(224), # <--- KLUCZOWA ZMIANA dla ConvNeXt
+    transforms.Resize(224),
     transforms.RandomCrop(224, padding=28),
     transforms.RandomHorizontalFlip(),
     transforms.ToTensor(),
@@ -132,20 +156,23 @@ TRANSFORMS_TR_CIFAR10_CONVNEXT = transforms.Compose([
 ])
 
 TRANSFORMS_TE_CIFAR10_CONVNEXT = transforms.Compose([
-    transforms.Resize(224), # <--- KLUCZOWA ZMIANA dla ConvNeXt
+    transforms.Resize(224),
     transforms.ToTensor(),
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
 ])
-# -------------------------
 
 
 def loader(data, batch_size, subset=[], sampling=-1):
     ''' Interface to the dataloader function '''
     if data == 'mnist_train':
-        return dataloader('mnist', './data', train=True, transform=TRANSFORMS_MNIST, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
+        return dataloader('mnist', './data', train=True, transform=TRANSFORMS_MNIST_TR, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'mnist_test':
-        return dataloader('mnist', './data', train=False, transform=TRANSFORMS_MNIST, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
-    if data == 'mnist_color32_train':
+        return dataloader('mnist', './data', train=False, transform=TRANSFORMS_MNIST_TE, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
+    elif data == 'usps_train':
+        return dataloader('usps', './data', train=True, transform=TRANSFORMS_USPS_TR, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
+    elif data == 'usps_test':
+        return dataloader('usps', './data', train=False, transform=TRANSFORMS_USPS_TE, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
+    elif data == 'mnist_color32_train':
         return dataloader('mnist', './data', train=True, transform=TRANSFORMS_TR_COLOR32, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'mnist_color32_test':
         return dataloader('mnist', './data', train=False, transform=TRANSFORMS_TE_COLOR32, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
@@ -183,24 +210,26 @@ def loader(data, batch_size, subset=[], sampling=-1):
         return dataloader('vgg_cifar10_adversarial', '/data/data1/datasets/vgg_cifar_adversarial/', train=False, transform=TRANSFORMS_TE_CIFAR10, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'imagenet_train':
         return dataloader('tinyimagenet', '/data/data1/datasets/tiny-imagenet-200/train/',
-                                 train=True, transform=TRANSFORMS_TR_IMAGENET, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
+                          train=True, transform=TRANSFORMS_TR_IMAGENET, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'imagenet_test':
         return dataloader('tinyimagenet', '/data/data1/datasets/tiny-imagenet-200/val/images/',
-                                 train=False, transform=TRANSFORMS_TE_IMAGENET, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
+                          train=False, transform=TRANSFORMS_TE_IMAGENET, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'cifar10_convnext_train':
-        return dataloader('cifar10', './data', train=True, transform=TRANSFORMS_TR_CIFAR10, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
+        return dataloader('cifar10', './data', train=True, transform=TRANSFORMS_TR_CIFAR10_CONVNEXT, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
     elif data == 'cifar10_convnext_test':
-        return dataloader('cifar10', './data', train=False, transform=TRANSFORMS_TE_CIFAR10, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
+        return dataloader('cifar10', './data', train=False, transform=TRANSFORMS_TE_CIFAR10_CONVNEXT, batch_size=batch_size, sampling=sampling, num_workers=8, subset=subset)
 
     
 def get_dataset(data, path, train, transform):
-    ''' Return loader for torchvision data. If data in [mnist, cifar] torchvision.datasets has built-in loaders else load from ImageFolder '''
+    ''' Return loader for torchvision data. '''
     if data == 'mnist':
         dataset = torchvision.datasets.MNIST(path, train=train, download=True, transform=transform)
+    elif data == 'usps':
+        dataset = torchvision.datasets.USPS(path, train=train, download=True, transform=transform)
     elif data == 'cifar10':
         dataset = torchvision.datasets.CIFAR10(path, train=train, download=True, transform=transform)
     elif data == 'svhn':
-        dataset = torchvision.datasets.SVHN(path, split=train, download=True, transform=transform)
+        dataset = torchvision.datasets.SVHN(path, split='train' if train else 'test', download=True, transform=transform)
     elif data == 'fashion_mnist':
         dataset = torchvision.datasets.FashionMNIST(path, train=train, download=True, transform=transform)
     else:

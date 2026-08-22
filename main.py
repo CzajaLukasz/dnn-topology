@@ -64,7 +64,7 @@ if args.build_graph:
         os.system('python ./build_graph_functional_big_networks.py --save_path '+SAVE_PATH+' --net '+str(args.net)+
                   ' --dataset '+str(args.dataset)+' --trial '+str(args.trial)+' --epochs '+str(args.epochs_test)+' --filtration '+
                   args.filtration+' --split '+str(args.split)+' --kl '+str(args.kl)+' --permute_labels '+str(args.permute_labels)+
-                  ' --binarize_labels '+str(args.binarize_labels)+' --partition '+str(args.partition))
+                  ' --binarize_labels '+str(args.binarize_labels)+' --partition '+str(args.partition)+' --thresholds '+str(args.thresholds))
     elif args.graph_type == 'functional_persample':
         os.system('python ./build_graph_functional_persample.py --save_path '+SAVE_PATH+' --net '+str(args.net)+' --dataset '+
                   args.dataset+' --trial '+str(args.trial)+' --epochs '+str(args.epochs_test)+' --filtration '+str(args.filtration)+' --permute_labels '+

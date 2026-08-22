@@ -74,7 +74,20 @@ manipulator = load_manipulator(args.permute_labels, args.binarize_labels)
 
 ''' Make intial pass before any training '''
 loss_te, acc_te = passer_test.run()
-save_checkpoint(checkpoint = {'net':net.state_dict(), 'acc': acc_te, 'epoch': 0}, path='./checkpoint/'+ONAME+'/', fname='ckpt_trial_'+str(args.trial)+'_epoch_0.t7')
+save_checkpoint(
+    checkpoint={
+        'net': net.state_dict(),
+        'train_acc': 0.0,
+        'test_acc': float(np.mean(acc_te)),
+        'acc': float(np.mean(acc_te)),
+        'gen_gap': 0.0,
+        'loss_tr': 0.0,
+        'loss_te': float(np.mean(loss_te)),
+        'epoch': 0
+    },
+    path='./checkpoint/'+ONAME+'/',
+    fname='ckpt_trial_'+str(args.trial)+'_epoch_0.t7'
+)
 
 losses = []
 for epoch in range(start_epoch, start_epoch+args.epochs):
@@ -87,7 +100,23 @@ for epoch in range(start_epoch, start_epoch+args.epochs):
     lr_scheduler.step(acc_te)
 
     if epoch in SAVE_EPOCHS:
-        save_checkpoint(checkpoint = {'net':net.state_dict(), 'acc': acc_te, 'epoch': epoch}, path='./checkpoint/'+ONAME+'/', fname='ckpt_trial_'+str(args.trial)+'_epoch_'+str(epoch)+'.t7')
-
+        tr_acc_val = float(np.mean(acc_tr))
+        te_acc_val = float(np.mean(acc_te))
+        gen_gap_val = (tr_acc_val - te_acc_val) / 100.0
+        
+        save_checkpoint(
+            checkpoint={
+                'net': net.state_dict(),
+                'train_acc': tr_acc_val,
+                'test_acc': te_acc_val,
+                'acc': te_acc_val,
+                'gen_gap': float(gen_gap_val),
+                'loss_tr': float(np.mean(loss_tr)),
+                'loss_te': float(np.mean(loss_te)),
+                'epoch': epoch
+            },
+            path='./checkpoint/'+ONAME+'/',
+            fname='ckpt_trial_'+str(args.trial)+'_epoch_'+str(epoch)+'.t7'
+        )
 '''Save losses'''
 save_losses(losses, path='./losses/'+ONAME+'/', fname='stats_trial_' + str(args.trial) +'.pkl')

@@ -18,17 +18,33 @@ args = parser.parse_args()
 
 path = os.path.join(args.save_path, args.net+"_"+args.dataset+"/")
 
+# Ustal optymalną liczbę procesów dla DIPHA (8 lub 16 jest najszybsze)
+#NPROC = min(int(NPROC), 16)
+
 for e in args.epochs:
     t_epoch_dipha = time.time()
 
+    # 1. Konwersja na format rzadki
     t_sparse = time.time()
-    os.system("/opt/dipha/build/full_to_sparse_distance_matrix "+str(MAX_EPSILON)+" "+path+"adj_epc{}_trl{}.bin ".format(e, args.trial)+
-              path+"adj_epc{}_trl{}_{}.bin".format(e, args.trial, MAX_EPSILON))
+    sparse_cmd = (
+        f"/opt/dipha/build/full_to_sparse_distance_matrix {MAX_EPSILON} "
+        f"{path}adj_epc{e}_trl{args.trial}.bin "
+        f"{path}adj_epc{e}_trl{args.trial}_{MAX_EPSILON}.bin"
+    )
+    os.system(sparse_cmd)
     log_timing(f"Epoka {e} - Konwersja na format rzadki: {time.time() - t_sparse:.2f} s", args)
 
+    # 2. Obliczenia DIPHA z flagami optymalizacyjnymi OpenMPI
     t_mpi = time.time()
-    os.system("mpiexec -n "+str(NPROC)+" /opt/dipha/build/dipha --upper_dim "+str(UPPER_DIM)+" --benchmark  --dual "+path+
-              "adj_epc{}_trl{}_{}.bin ".format(e, args.trial, MAX_EPSILON)+path+"adj_epc{}_trl{}_{}.bin.out".format( e, args.trial, MAX_EPSILON))
-    log_timing(f"Epoka {e} - Obliczenia DIPHA (MPI): {time.time() - t_mpi:.2f} s", args) # <--- ZAPIS
+    mpi_cmd = (
+        f"mpiexec --allow-run-as-root --oversubscribe "
+        f"--mca btl_vader_single_copy_mechanism none "
+        f"-n {NPROC} "
+        f"/opt/dipha/build/dipha --upper_dim {UPPER_DIM} --benchmark --dual "
+        f"{path}adj_epc{e}_trl{args.trial}_{MAX_EPSILON}.bin "
+        f"{path}adj_epc{e}_trl{args.trial}_{MAX_EPSILON}.bin.out"
+    )
+    os.system(mpi_cmd)
+    log_timing(f"Epoka {e} - Obliczenia DIPHA (MPI, {NPROC} procs): {time.time() - t_mpi:.2f} s", args)
     
     log_timing(f"Epoka {e} - CAŁKOWITY CZAS TOPOLOGII: {time.time() - t_epoch_dipha:.2f} s", args)
