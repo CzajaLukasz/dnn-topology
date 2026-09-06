@@ -16,7 +16,11 @@ num_classes = {
     'mnist_adversarial': 10,
     'imagenet': 200,
     'imagenet_gray': 200,
-    'vgg_cifar10_adversarial': 10
+    'vgg_cifar10_adversarial': 10,
+    'pacs_photo': 7,
+    'pacs_art': 7,
+    'pacs_cartoon': 7,
+    'pacs_sketch': 7
 }
 
 
@@ -72,6 +76,10 @@ def get_model(name, dataset):
         net = TopologicalConvNeXt(num_classes=10)
     elif name == 'convnext_tiny' and dataset == 'imagenet':
         net = TopologicalConvNeXt(num_classes=200)
+    elif name in ['resnet', 'resnet18'] and 'pacs' in dataset:
+        net = ResNet18(num_classes=7)
+    elif name == 'convnext_tiny' and 'pacs' in dataset:
+        net = TopologicalConvNeXt(num_classes=7)
 
     # Bezpiecznik chroniący przed UnboundLocalError
     if net is None:

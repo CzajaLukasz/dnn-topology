@@ -91,7 +91,7 @@ class ResNet(nn.Module):
         x = self.layer2(x)
         x = self.layer3(x)
         x = self.layer4(x)
-        x = F.avg_pool2d(x, 4)
+        x = F.adaptive_avg_pool2d(x, (1, 1))
         x = x.view(x.size(0), -1)
         out = self.linear(x)
         return out        
@@ -102,11 +102,11 @@ class ResNet(nn.Module):
         x3 = self.layer2(x2)
         x4 = self.layer3(x3)
         x5 = self.layer4(x4)
-        x6 = F.avg_pool2d(x5, 4)
+        x6 = F.adaptive_avg_pool2d(x5, (1, 1))
         x7 = x6.view(x6.size(0), -1)
         out = self.linear(x7)
         '''return [x1, x2, x3, x4, x5, x6, x7, out]'''
-        return [x4, x5, x6, x7, out]        
+        return [x4, x5, x6, x7, out]  
 
     
 def ResNet18(num_classes=10):
